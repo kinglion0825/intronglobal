@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>인트론글로벌 문의하기</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="has-footer">
+
+  <!-- 내용 영역 -->
+  <div class="contact-page-wrapper">
+
+    <!-- 문의페이지 헤더 -->
+    <header class="contact-header">
+      <a href="#" onclick="window.close();" class="back-btn">← 메인으로 돌아가기</a>
+      <h1>문의하기</h1>
+    </header>
+
+    <!-- 메인 문의 섹션 -->
+    <section class="section contact-page">
+      <h2>거래 문의</h2>
+      <p class="section-sub">
+        도매·무역(수출/수입) 관련 상담은 아래 양식을 통해 문의해주세요.
+      </p>
+
+      <form id="contactForm" class="contact-form">
+        <input type="text" name="name" placeholder="이름 / 회사명" required />
+        <input type="email" name="email" placeholder="이메일" required />
+        <input type="text" name="subject" placeholder="문의 제목" required />
+        <textarea name="message" rows="6" placeholder="문의 내용을 입력하세요" required></textarea>
+        <button type="submit">메일 보내기</button>
+      </form>
+    </section>
+
+  </div>
+
+  <!-- 푸터: 메인 페이지랑 동일 구조 -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-info">
+        <strong>인트론글로벌(INTRON GLOBAL)</strong><br>
+        사업분야: 도매업 · 무역업 · 수출<br>
+        주소: 경기도 용인시 기흥구 동백중앙로54번길 25-17(중동)<br>
+        전화: 010-1234-5678 / 이메일: example@intronglobal.com
+      </div>
+      <div class="footer-copy">
+        © 2025 INTRON GLOBAL. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- EmailJS 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+  <script>
+    // EmailJS 초기화
+    emailjs.init("S_pZX4esOTmL2yED9");
+
+    document.getElementById("contactForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const form = this;
+
+      const formData = {
+        name: form.name.value,
+        email: form.email.value,
+        subject: form.subject.value,
+        message: form.message.value
+      };
+
+      const submitBtn = form.querySelector("button[type='submit']");
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = "전송 중...";
+
+      emailjs.send("test1", "template_ahovfta", formData)
+        .then(function () {
+          alert("문의가 정상적으로 전송되었습니다.");
+          form.reset();
+        })
+        .catch(function (error) {
+          console.error("전송 오류:", error);
+          alert("전송에 실패했습니다. 잠시 후 다시 시도해주세요.");
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        });
+    });
+  </script>
+
+</body>
+</html>

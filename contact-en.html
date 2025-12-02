@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INTRON GLOBAL | Contact</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- 페이지 내용 래퍼 -->
+  <div class="contact-page-wrapper">
+
+    <!-- Contact Page Header -->
+    <header class="contact-header">
+      <a href="#" onclick="window.close();" class="back-btn">← Back to Main</a>
+      <h1>Contact</h1>
+    </header>
+
+    <!-- Main Contact Section -->
+    <section class="section contact-page">
+      <h2>Business Inquiry</h2>
+      <p class="section-sub">
+        For wholesale and trade (import/export) inquiries, please fill out the form below.
+      </p>
+
+      <!-- ✅ EmailJS용 폼 (mailto, method, enctype 제거 / id 추가) -->
+      <form id="contactForm" class="contact-form">
+        <input type="text" name="name" placeholder="Name / Company Name" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="text" name="subject" placeholder="Subject" required />
+        <textarea name="message" rows="6" placeholder="Write your message here" required></textarea>
+        <button type="submit">Send Email</button>
+      </form>
+    </section>
+
+  </div>
+
+  <!-- ✅ 푸터 (메인과 동일 스타일로) -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-info">
+        <strong>INTRON GLOBAL</strong><br>
+        Business Areas: Wholesale · Trade · Export<br>
+        Address: 25-17, Dongbaekjungang-ro 54beon-gil, Giheung-gu, Yongin-si, Korea<br>
+        Phone: +82 10-1234-5678 / Email: example@intronglobal.com
+      </div>
+      <div class="footer-copy">
+        © 2025 INTRON GLOBAL. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ✅ EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    // EmailJS init
+    emailjs.init("S_pZX4esOTmL2yED9");
+
+    document.getElementById("contactForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const form = this;
+
+      const formData = {
+        name: form.name.value,
+        email: form.email.value,
+        subject: form.subject.value,
+        message: form.message.value
+      };
+
+      const submitBtn = form.querySelector("button[type='submit']");
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = "Sending...";
+
+      emailjs.send("test1", "template_ahovfta", formData)
+        .then(function () {
+          alert("Your message has been successfully sent. Thank you.");
+          form.reset();
+        })
+        .catch(function (error) {
+          console.error("EmailJS Error:", error);
+          alert("Failed to send message. Please try again later.");
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        });
+    });
+  </script>
+
+</body>
+</html>
