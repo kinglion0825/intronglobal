@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>INTRON GLOBAL | Contact</title>
-  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../style.css" /> <!-- en 폴더 안에 있을 때 -->
 </head>
 <body class="has-footer">
 
@@ -51,25 +51,47 @@
     </div>
   </footer>
 
+  <!-- ✅ Custom Confirm Modal -->
+  <div id="confirmModalEn" class="modal-overlay">
+    <div class="modal-box">
+      <h3>Confirm Sending</h3>
+      <p>Once sent, the email cannot be edited or cancelled.</p>
+      <p>Please review your message carefully.</p>
+      <div class="modal-buttons">
+        <button id="confirmYesEn">Send</button>
+        <button id="confirmNoEn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <!-- EmailJS -->
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
   <script>
-    emailjs.init("S_pZX4esOTmL2yED9"); // EmailJS public key
+    emailjs.init("S_pZX4esOTmL2yED9");
+
+    const modalEn = document.getElementById("confirmModalEn");
+    const yesBtnEn = document.getElementById("confirmYesEn");
+    const noBtnEn = document.getElementById("confirmNoEn");
+    let pendingFormEn = null;
 
     document.getElementById("contactFormEn").addEventListener("submit", function (e) {
       e.preventDefault();
+      pendingFormEn = this;
+      modalEn.style.display = "flex";
+    });
 
-      // Warning before sending email
-      const agree = confirm(
-        "Once sent, the email cannot be edited or cancelled.\n\n" +
-        "Have you reviewed your message?\n\n" +
-        "Do you want to send this email?"
-      );
+    noBtnEn.addEventListener("click", () => {
+      modalEn.style.display = "none";
+      pendingFormEn = null;
+    });
 
-      if (!agree) return; // Stop if user cancels
+    yesBtnEn.addEventListener("click", () => {
+      modalEn.style.display = "none";
+      if (!pendingFormEn) return;
 
-      const form = this;
+      const form = pendingFormEn;
+      pendingFormEn = null;
 
       const formData = {
         name: form.name.value,
@@ -79,17 +101,17 @@
       };
 
       const submitBtn = form.querySelector("button[type='submit']");
-      submitBtn.disabled = true;
       const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
       submitBtn.textContent = "Sending...";
 
       emailjs.send("INTRON MAIL", "template_ahovfta", formData)
         .then(function () {
-          alert("Your inquiry has been successfully sent.");
+          alert("Your inquiry has been sent successfully.");
           form.reset();
         })
         .catch(function (error) {
-          console.error("Error:", error);
+          console.error("Send error:", error);
           alert("Failed to send. Please try again later.");
         })
         .finally(function () {
