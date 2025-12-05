@@ -650,7 +650,8 @@ body {
   }
 }
 
-/* 모달 전체 배경 */
+/* ===== Custom Confirm Modal ===== */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -661,7 +662,6 @@ body {
   z-index: 2000;
 }
 
-/* 모달 박스 */
 .modal-box {
   background: #ffffff;
   padding: 25px;
@@ -670,12 +670,17 @@ body {
   max-width: 380px;
   text-align: center;
   box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-  animation: fadeIn 0.2s ease-out;
+  animation: modalFadeIn 0.2s ease-out;
 }
 
 .modal-box h3 {
   margin-bottom: 10px;
   font-size: 20px;
+}
+
+.modal-box p {
+  margin: 4px 0;
+  font-size: 14px;
 }
 
 .modal-buttons {
@@ -690,21 +695,25 @@ body {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 14px;
 }
 
-#confirmYes {
-  background: #0066ff;
+#confirmYes,
+#confirmYesEn {
+  background: #1e88e5;
   color: #fff;
 }
 
-#confirmNo {
-  background: #dddddd;
+#confirmNo,
+#confirmNoEn {
+  background: #e5e7eb;
+  color: #111827;
 }
 
-/* fade animation */
-@keyframes fadeIn {
+@keyframes modalFadeIn {
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+
 
