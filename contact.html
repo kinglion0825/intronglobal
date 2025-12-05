@@ -6,13 +6,14 @@
   <title>인트론글로벌 문의하기</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="has-footer">
 
+  <!-- 내용 영역 -->
   <div class="contact-page-wrapper">
 
     <!-- 문의페이지 헤더 -->
     <header class="contact-header">
-      <a href="#" onclick="window.close();" class="back-btn">← 메인으로 돌아가기</a>
+      <a href="#" onclick="window.close();" class="back-btn">← 닫기</a>
       <h1>문의하기</h1>
     </header>
 
@@ -23,15 +24,7 @@
         도매·무역(수출/수입) 관련 상담은 아래 양식을 통해 문의해주세요.
       </p>
 
-      <p class="form-notice">
-        메일 전송 후에는 수정하거나 취소할 수 없으니, 내용을 다시 한 번 확인해 주세요.
-      </p>
-
-      <form class="contact-form"
-            method="post"
-            action="mailto:intron1101@gmail.com"
-            enctype="text/plain"
-            onsubmit="return confirmMailSend();">
+      <form id="contactForm" class="contact-form">
         <input type="text" name="name" placeholder="이름 / 회사명" required />
         <input type="email" name="email" placeholder="이메일" required />
         <input type="text" name="subject" placeholder="문의 제목" required />
@@ -40,30 +33,73 @@
       </form>
     </section>
 
-    <footer class="footer">
-      <div class="footer-inner">
-        <div class="footer-info">
-          <strong>인트론글로벌(INTRON GLOBAL)</strong><br>
-          사업분야: 도매업 · 무역업 · 수출<br>
-          주소: 경기도 용인시 기흥구 동백중앙로54번길 25-17(중동)<br>
-          팩스: 0504-423-5748 / 이메일: intron1101@gmail.com
-        </div>
-        <div class="footer-copy">
-          © 2025 INTRON GLOBAL. All rights reserved.
-        </div>
-      </div>
-    </footer>
-
   </div>
 
+  <!-- 푸터 -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-info">
+        <strong>인트론글로벌(INTRON GLOBAL)</strong><br />
+        사업분야: 도매업 · 무역업 · 수출<br />
+        주소: 경기도 용인시 기흥구 동백중앙로54번길 25-17(중동)<br />
+        팩스: 0504-423-5748 / 이메일: intron1101@gmail.com
+      </div>
+
+      <div class="footer-copy">
+        © 2025 INTRON GLOBAL. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- EmailJS 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
   <script>
-    function confirmMailSend() {
-      return confirm(
-        '메일을 보내면 수정하거나 취소할 수 없습니다.\n' +
-        '작성하신 내용을 다시 한 번 확인하셨나요?\n\n' +
-        '메일을 보내시겠습니까?'
+    // EmailJS 초기화
+    emailjs.init("S_pZX4esOTmL2yED9");
+
+    document.getElementById("contactForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      // ⚠ 전송 전 경고창 띄우기
+      const agree = confirm(
+        "메일을 보내면 수정하거나 취소할 수 없습니다.\n\n" +
+        "입력한 내용을 다시 확인하셨나요?\n\n" +
+        "메일을 전송하시겠습니까?"
       );
-    }
+
+      if (!agree) {
+        return; // 사용자가 취소 버튼 누르면 전송 중단
+      }
+
+      const form = this;
+
+      const formData = {
+        name: form.name.value,
+        email: form.email.value,
+        subject: form.subject.value,
+        message: form.message.value
+      };
+
+      const submitBtn = form.querySelector("button[type='submit']");
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = "전송 중...";
+
+      emailjs.send("INTRON MAIL", "template_ahovfta", formData)
+        .then(function () {
+          alert("문의가 정상적으로 전송되었습니다.");
+          form.reset();
+        })
+        .catch(function (error) {
+          console.error("전송 오류:", error);
+          alert("전송에 실패했습니다. 잠시 후 다시 시도해주세요.");
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        });
+    });
   </script>
 
 </body>
