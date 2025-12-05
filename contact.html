@@ -76,7 +76,7 @@
       const originalText = submitBtn.textContent;
       submitBtn.textContent = "전송 중...";
 
-      emailjs.send("test1", "template_ahovfta", formData)
+      emailjs.send("INTRON MAIL", "template_ahovfta", formData)
         .then(function () {
           alert("문의가 정상적으로 전송되었습니다.");
           form.reset();
@@ -94,5 +94,6 @@
 
 </body>
 </html>
+
 
 
