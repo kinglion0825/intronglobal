@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>INTRON GLOBAL | Contact</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="../style.css" />
 </head>
-<body>
+<body class="has-footer">
 
-  <!-- 페이지 내용 래퍼 -->
+  <!-- Wrapper -->
   <div class="contact-page-wrapper">
 
-    <!-- Contact Page Header -->
+    <!-- Header -->
     <header class="contact-header">
       <a href="#" onclick="window.close();" class="back-btn">← Close</a>
       <h1>Contact</h1>
@@ -24,8 +24,7 @@
         For wholesale and trade (import/export) inquiries, please fill out the form below.
       </p>
 
-      <!-- ✅ EmailJS용 폼 (mailto, method, enctype 제거 / id 추가) -->
-      <form id="contactForm" class="contact-form">
+      <form id="contactFormEn" class="contact-form">
         <input type="text" name="name" placeholder="Name / Company Name" required />
         <input type="email" name="email" placeholder="Email" required />
         <input type="text" name="subject" placeholder="Subject" required />
@@ -36,31 +35,39 @@
 
   </div>
 
-  <!-- ✅ 푸터 (메인과 동일 스타일로) -->
+  <!-- Footer -->
   <footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-info">
-      <strong>INTRON GLOBAL</strong><br />
-      Business Areas: Wholesale · Trade · Export<br />
-      Address: 25-17 Dongbaekjungang-ro 54beon-gil, Giheung-gu, Yongin-si, Gyeonggi-do, Korea<br />
-      Fax: +82 504-423-5748 / Email: intron1101@gmail.com
+    <div class="footer-inner">
+      <div class="footer-info">
+        <strong>INTRON GLOBAL</strong><br />
+        Business Areas: Wholesale · Trade · Export<br />
+        Address: 25-17, Dongbaekjungang-ro 54beon-gil, Giheung-gu, Yongin-si, Gyeonggi-do, Korea<br />
+        Fax: +82 504-423-5748 / Email: intron1101@gmail.com
+      </div>
+
+      <div class="footer-copy">
+        © 2025 INTRON GLOBAL. All rights reserved.
+      </div>
     </div>
+  </footer>
 
-    <div class="footer-copy">
-      © 2025 INTRON GLOBAL. All rights reserved.
-    </div>
-  </div>
-</footer>
-
-
-  <!-- ✅ EmailJS -->
+  <!-- EmailJS -->
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-  <script>
-    // EmailJS init
-    emailjs.init("S_pZX4esOTmL2yED9");
 
-    document.getElementById("contactForm").addEventListener("submit", function (e) {
+  <script>
+    emailjs.init("S_pZX4esOTmL2yED9"); // EmailJS public key
+
+    document.getElementById("contactFormEn").addEventListener("submit", function (e) {
       e.preventDefault();
+
+      // Warning before sending email
+      const agree = confirm(
+        "Once sent, the email cannot be edited or cancelled.\n\n" +
+        "Have you reviewed your message?\n\n" +
+        "Do you want to send this email?"
+      );
+
+      if (!agree) return; // Stop if user cancels
 
       const form = this;
 
@@ -78,12 +85,12 @@
 
       emailjs.send("INTRON MAIL", "template_ahovfta", formData)
         .then(function () {
-          alert("Your message has been successfully sent. Thank you.");
+          alert("Your inquiry has been successfully sent.");
           form.reset();
         })
         .catch(function (error) {
-          console.error("EmailJS Error:", error);
-          alert("Failed to send message. Please try again later.");
+          console.error("Error:", error);
+          alert("Failed to send. Please try again later.");
         })
         .finally(function () {
           submitBtn.disabled = false;
@@ -94,6 +101,3 @@
 
 </body>
 </html>
-
-
-
