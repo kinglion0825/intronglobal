@@ -51,28 +51,47 @@
     </div>
   </footer>
 
+  <!-- ✅ 커스텀 전송 확인 모달 -->
+  <div id="confirmModal" class="modal-overlay">
+    <div class="modal-box">
+      <h3>전송 확인</h3>
+      <p>메일을 보내면 수정하거나 취소할 수 없습니다.</p>
+      <p>입력한 내용을 다시 한 번 확인하셨나요?</p>
+      <div class="modal-buttons">
+        <button id="confirmYes">전송하기</button>
+        <button id="confirmNo">취소</button>
+      </div>
+    </div>
+  </div>
+
   <!-- EmailJS 라이브러리 -->
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
   <script>
-    // EmailJS 초기화
-    emailjs.init("S_pZX4esOTmL2yED9");
+    emailjs.init("S_pZX4esOTmL2yED9"); // 네 public key
+
+    const modal = document.getElementById("confirmModal");
+    const yesBtn = document.getElementById("confirmYes");
+    const noBtn = document.getElementById("confirmNo");
+    let pendingForm = null;
 
     document.getElementById("contactForm").addEventListener("submit", function (e) {
       e.preventDefault();
+      pendingForm = this;
+      modal.style.display = "flex"; // 모달 열기
+    });
 
-      // ⚠ 전송 전 경고창 띄우기
-      const agree = confirm(
-        "메일을 보내면 수정하거나 취소할 수 없습니다.\n\n" +
-        "입력한 내용을 다시 확인하셨나요?\n\n" +
-        "메일을 전송하시겠습니까?"
-      );
+    noBtn.addEventListener("click", () => {
+      modal.style.display = "none";
+      pendingForm = null;
+    });
 
-      if (!agree) {
-        return; // 사용자가 취소 버튼 누르면 전송 중단
-      }
+    yesBtn.addEventListener("click", () => {
+      modal.style.display = "none";
+      if (!pendingForm) return;
 
-      const form = this;
+      const form = pendingForm;
+      pendingForm = null;
 
       const formData = {
         name: form.name.value,
@@ -82,8 +101,8 @@
       };
 
       const submitBtn = form.querySelector("button[type='submit']");
-      submitBtn.disabled = true;
       const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
       submitBtn.textContent = "전송 중...";
 
       emailjs.send("INTRON MAIL", "template_ahovfta", formData)
