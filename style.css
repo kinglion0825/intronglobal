@@ -640,3 +640,12 @@ body {
   border: 1px solid #dde2ee;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
+
+/* PC(데스크탑) 화면에서 푸터 내용을 왼쪽에 붙이기 */
+@media (min-width: 1024px) {
+  .footer-inner {
+    max-width: none;   /* 가운데 박스 폭 제한 해제 */
+    margin: 0;         /* auto 마진 제거 */
+    padding-left: 40px;/* 헤더랑 맞춰서 왼쪽 여백만 살짝 줌 */
+  }
+}
