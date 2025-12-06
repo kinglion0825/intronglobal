@@ -3,33 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INTRON GLOBAL | Contact</title>
-  <link rel="stylesheet" href="../style.css" /> <!-- en 폴더 안에 있을 때 -->
+  <title>INTRON GLOBAL – Contact</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body class="has-footer">
 
-  <!-- Wrapper -->
   <div class="contact-page-wrapper">
 
     <!-- Header -->
     <header class="contact-header">
       <a href="#" onclick="window.close();" class="back-btn">← Close</a>
-      <h1>Contact</h1>
+      <h1>Contact Us</h1>
     </header>
 
-    <!-- Main Contact Section -->
+    <!-- Contact Section -->
     <section class="section contact-page">
       <h2>Business Inquiry</h2>
       <p class="section-sub">
-        For wholesale and trade (import/export) inquiries, please fill out the form below.
+        For wholesale, trade, import/export inquiries, please fill out the form below.
       </p>
 
-      <form id="contactFormEn" class="contact-form">
-        <input type="text" name="name" placeholder="Name / Company Name" required />
-        <input type="email" name="email" placeholder="Email" required />
-        <p class="email-note">* We will reply to the email you provide. Please enter an active and accessible email address.</p>
+      <form id="contactForm" class="contact-form">
+
+        <input type="text" name="name" placeholder="Name / Company" required />
+        <input type="email" name="email" placeholder="Email Address" required />
+
+        <!-- 🔥 Email Notice -->
+        <p class="email-note">※ We will send a reply to the email you enter. Please make sure it is correct.</p>
+
         <input type="text" name="subject" placeholder="Subject" required />
-        <textarea name="message" rows="6" placeholder="Write your message here" required></textarea>
+
+        <textarea name="message" rows="6" placeholder="Write your message..." required></textarea>
+
+        <!-- 🔥 Honeypot bot filter -->
+        <div style="display:none;">
+          <input type="text" name="hp_field" autocomplete="off">
+        </div>
+
         <button type="submit">Send Email</button>
       </form>
     </section>
@@ -38,32 +48,19 @@
 
   <!-- Footer -->
   <footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-info">
-      <strong>INTRON GLOBAL CO., LTD.</strong><br />
-      Business Areas: Wholesale · Trade(Export·Import)<br />
-      Address: 503-439, 9 GANGNAM-RO, GIHEUNG-GU, YONGIN-SI, KOREA<br />
-      Fax: +82 504-423-5748 / Email: intron1101@gmail.com
-    </div>
+    <div class="footer-inner">
+      <div class="footer-info">
+        <strong>INTRON GLOBAL CO., LTD.</strong><br />
+        Business Areas: Wholesale · Trade (Import/Export)<br />
+        Address: 503-439, 9 Gangnam-ro, Giheung-gu, Yongin-si, Korea<br />
+        Fax: +82 504-423-5748 / Email: intron1101@gmail.com
+      </div>
 
-    <div class="footer-copy">
-      © 2025 INTRON GLOBAL CO., LTD. All rights reserved.
-    </div>
-  </div>
-</footer>
-
-  <!-- ✅ Custom Confirm Modal -->
-  <div id="confirmModalEn" class="modal-overlay">
-    <div class="modal-box">
-      <h3>Confirm Sending</h3>
-      <p>Once sent, the email cannot be edited or cancelled.</p>
-      <p>Please review your message carefully.</p>
-      <div class="modal-buttons">
-        <button id="confirmYesEn">Send</button>
-        <button id="confirmNoEn">Cancel</button>
+      <div class="footer-copy">
+        © 2025 INTRON GLOBAL CO., LTD. All rights reserved.
       </div>
     </div>
-  </div>
+  </footer>
 
   <!-- EmailJS -->
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
@@ -71,28 +68,27 @@
   <script>
     emailjs.init("S_pZX4esOTmL2yED9");
 
-    const modalEn = document.getElementById("confirmModalEn");
-    const yesBtnEn = document.getElementById("confirmYesEn");
-    const noBtnEn = document.getElementById("confirmNoEn");
-    let pendingFormEn = null;
-
-    document.getElementById("contactFormEn").addEventListener("submit", function (e) {
+    document.getElementById("contactForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      pendingFormEn = this;
-      modalEn.style.display = "flex";
-    });
 
-    noBtnEn.addEventListener("click", () => {
-      modalEn.style.display = "none";
-      pendingFormEn = null;
-    });
+      const form = this;
+      const submitBtn = form.querySelector("button[type='submit']");
+      const originalText = submitBtn.textContent;
 
-    yesBtnEn.addEventListener("click", () => {
-      modalEn.style.display = "none";
-      if (!pendingFormEn) return;
+      // 🔥 Honeypot bot detection
+      if (form.hp_field.value.trim() !== "") {
+        alert("An error occurred during sending. (Code: 101)");
+        return;
+      }
 
-      const form = pendingFormEn;
-      pendingFormEn = null;
+      // 🔥 Pre-send warning
+      if (!confirm(
+        "Once sent, the email cannot be edited or cancelled.\n\n" +
+        "Have you reviewed your message?\n" +
+        "Do you want to send this email?"
+      )) {
+        return;
+      }
 
       const formData = {
         name: form.name.value,
@@ -101,21 +97,19 @@
         message: form.message.value
       };
 
-      const submitBtn = form.querySelector("button[type='submit']");
-      const originalText = submitBtn.textContent;
       submitBtn.disabled = true;
       submitBtn.textContent = "Sending...";
 
       emailjs.send("INTRON MAIL", "template_ahovfta", formData)
-        .then(function () {
+        .then(() => {
           alert("Your inquiry has been sent successfully.");
           form.reset();
         })
-        .catch(function (error) {
-          console.error("Send error:", error);
-          alert("Failed to send. Please try again later.");
+        .catch(error => {
+          console.error(error);
+          alert("Failed to send your message. Please try again later.");
         })
-        .finally(function () {
+        .finally(() => {
           submitBtn.disabled = false;
           submitBtn.textContent = originalText;
         });
