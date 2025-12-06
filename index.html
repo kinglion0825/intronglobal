@@ -5,9 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>인트론글로벌</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
 </head>
 <body id="top">
-  
+  <!-- 🌐 언어 선택 모달 -->
+ <div id="langModal" class="modal-overlay">
+  <div class="modal-box">
+    <h3>언어를 선택하세요<br>Select Language</h3>
+
+    <div class="lang-buttons">
+      <button class="lang-kr">한국어 (KR)</button>
+      <button class="lang-en">English (EN)</button>
+    </div>
+  </div>
+ </div>
+
   <!-- 상단 메뉴 -->
   <header class="header">
     <a href="index.html" class="logo">
@@ -264,6 +276,45 @@
     window.addEventListener('resize', onScrollHandler);
     window.addEventListener('load', onScrollHandler);
   </script>
+
+ <script>
+ // ▣ 언어 선택을 저장하는 쿠키 기능
+ function setLangCookie(lang) {
+  document.cookie = "site_lang=" + lang + "; path=/; max-age=31536000"; // 1년
+ }
+
+ function getLangCookie() {
+  const match = document.cookie.match(/site_lang=(.*?)(;|$)/);
+  return match ? match[1] : null;
+ }
+
+ // ▣ 언어 선택 모달 요소
+ const langModal = document.getElementById("langModal");
+ const langKR = document.querySelector(".lang-kr");
+ const langEN = document.querySelector(".lang-en");
+
+ // ▣ 첫 방문 시 모달 표시
+ window.addEventListener("load", () => {
+  const savedLang = getLangCookie();
+
+  if (!savedLang) {
+    langModal.style.display = "flex"; // 언어 선택 띄움
+  }
+ });
+
+ // ▣ 한국어 선택
+ langKR.addEventListener("click", () => {
+  setLangCookie("kr");
+  window.location.href = "/index.html";
+ });
+
+ // ▣ 영어 선택
+ langEN.addEventListener("click", () => {
+  setLangCookie("en");
+  window.location.href = "/index-en.html";
+ });
+ </script>
+
 </body>
 </html>
 
