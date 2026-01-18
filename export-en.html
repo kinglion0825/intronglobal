@@ -7,23 +7,54 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    .content-box {
-      text-align: center;       /* Center the whole section */
-      margin-top: 50px;
-      font-size: 20px;
+    .content-section {
+      margin-top: 40px;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
+    }
+
+    .service-card {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      transition: all 0.3s ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(10, 92, 255, 0.12);
+      border-color: #0a5cff;
+    }
+
+    .service-card h3 {
+      color: #0a2f6f;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .service-card p {
+      color: #555;
       line-height: 1.8;
+      font-size: 17px;
     }
 
-    .content-inner {
-      display: inline-block;    /* Centers inner block */
-      text-align: left;         /* Left-align inside block */
-    }
-
-    .center-line {
-      text-align: center;       /* Only last line centered */
-      width: 100%;
-      display: block;
-      margin-top: 0.1px;
+    .region-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #e3efff, #f0f5ff);
+      color: #0a5cff;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 17px;
+      font-weight: 600;
+      margin-top: 12px;
     }
   </style>
 </head>
@@ -34,24 +65,26 @@
     <h1>Trade · Export · Import</h1>
   </header>
 
-  <section class="section">
-    <h2>Domestic import distribution & overseas export · intermediary trade</h2>
-  </section>
+  <section class="section content-section">
+    <h2>Comprehensive Trade Solutions</h2>
+    <p class="section-sub">Domestic import distribution and overseas export services with proven market expertise</p>
 
-  <section>
-    <div class="content-box">
-
-      <div class="content-inner">
-        ● Overseas Export: Europe, United Kingdom, Türkiye, Middle East<br>
-        ● Intermediary Trade: Taiwan FORMOSA, China Anti-dripping Agents<br>
-        ● FTA Approved Exporter: Fiberglass FTA AEX (Approved Exporter)<br>
+    <div class="service-grid">
+      <div class="service-card">
+        <h3>🌐 International Export</h3>
+        <p>We export specialized products to major global markets including Europe, the United Kingdom, Turkey, and the Middle East, ensuring reliable delivery and compliance with international standards.</p>
       </div>
 
-      <!-- 🔥 Last line centered only -->
-      <div class="center-line">
-        ㅤㅤKR-EU / KR-UK / KR-TR
+      <div class="service-card">
+        <h3>🤝 Intermediary Trade</h3>
+        <p>We facilitate seamless intermediary trade operations, specializing in high-quality products from Taiwan (FORMOSA) and China, connecting manufacturers with the right distribution partners.</p>
       </div>
 
+      <div class="service-card">
+        <h3>✓&nbsp;FTA&nbsp;Approved&nbsp;Exporter</h3>
+        <p>As an officially recognized FTA Approved Exporter for glass fiber products, we ensure your shipments meet all preferential trade agreement requirements and tariff benefits.</p>
+        <div class="region-badge">KR-EU / KR-UK / KR-TR</div>
+      </div>
     </div>
   </section>
 
