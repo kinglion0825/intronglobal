@@ -357,7 +357,7 @@ body {
 
 .about-contact {
   margin-top: 16px;
-  font-size: 13px;
+  font-size: 16px;
   color: #555;
   line-height: 1.8;
 }
@@ -899,4 +899,5 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 168, 107, 0.3);
 }
+
 
