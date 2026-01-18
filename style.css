@@ -174,7 +174,7 @@ body {
 }
 
 .hero-sub {
-  font-size: 15px;
+  font-size: 18px;
   line-height: 1.8;
   opacity: 0.92;
   margin-bottom: 32px;
@@ -899,3 +899,4 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 168, 107, 0.3);
 }
+
