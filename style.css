@@ -442,7 +442,7 @@ body {
 }
 
 .strength-item h3 {
-  font-size: 16px;
+  font-size: 18px;
   margin-bottom: 10px;
   color: #0a2f6f;
   font-weight: 700;
@@ -957,4 +957,10 @@ body {
     object-fit: contain;
   }
 }
+
+.fta-line {
+  white-space: nowrap;
+  display: inline-block;
+}
+
 
