@@ -941,3 +941,13 @@ body {
   line-height: 1.8;
   margin-bottom: 6px;
 }
+
+/* 모바일에서 About Us 로고만 축소 */
+@media (max-width: 768px) {
+  .about-img img {
+    width: 60%;
+    max-width: 220px;
+    margin: 0 auto;
+    display: block;
+  }
+}
