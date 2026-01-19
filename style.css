@@ -357,7 +357,7 @@ body {
 
 .about-contact {
   margin-top: 16px;
-  font-size: 16px;
+  font-size: 13px;
   color: #555;
   line-height: 1.8;
 }
@@ -900,4 +900,44 @@ body {
   box-shadow: 0 4px 12px rgba(0, 168, 107, 0.3);
 }
 
+/* ===== Service Page Common ===== */
 
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.service-card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(10, 92, 255, 0.12);
+  border-color: #0a5cff;
+}
+
+.service-card h3 {
+  color: #0a2f6f;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.service-card ul {
+  padding-left: 18px;
+}
+
+.service-card li {
+  font-size: 17px;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 6px;
+}
