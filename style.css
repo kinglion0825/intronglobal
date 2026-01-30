@@ -399,6 +399,84 @@ body {
   font-weight: 400;
 }
 
+/* Contact form styles */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+  max-width: 700px;
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form input[type="tel"],
+.contact-form input[type="url"],
+.contact-form textarea {
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #222;
+}
+
+.file-label {
+  display: inline-block;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+}
+
+.file-label input[type="file"] {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.file-info {
+  font-size: 13px;
+  color: #666;
+}
+
+.progress {
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #0a5cff, #00aaff);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.captcha-wrap {
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+
+.contact-form button[type="submit"] {
+  background: #0a5cff;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+
+.contact-form button[type="submit"]:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.email-note {
+  font-size: 13px;
+  color: #555;
+}
+
 /* 카드 전체를 버튼처럼 */
 .card-btn {
   cursor: pointer;
