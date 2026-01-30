@@ -6,182 +6,218 @@
   <title>INTRON GLOBAL – Contact</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body class="has-footer">
 
-  <div class="contact-page-wrapper">
+<div class="contact-page-wrapper">
 
-    <!-- Header -->
-    <header class="contact-header">
-      <a href="#" onclick="window.close();" class="back-btn">← Close</a>
-      <h1>Contact Us</h1>
-    </header>
+  <!-- Header -->
+  <header class="contact-header">
+    <a href="#" onclick="window.close();" class="back-btn">← Close</a>
+    <h1>Contact Us</h1>
+  </header>
 
-    <!-- Contact Section -->
-    <section class="section contact-page">
-      <h2>Business Inquiry</h2>
-      <p class="section-sub">
-        For wholesale, trade, import/export inquiries, please fill out the form below.
+  <!-- Contact Section -->
+  <section class="section contact-page">
+    <h2>Business Inquiry</h2>
+    <p class="section-sub">
+      For wholesale, trade, import/export inquiries, please fill out the form below.
+    </p>
+
+    <form id="contactForm" class="contact-form" enctype="multipart/form-data" novalidate>
+
+      <input type="text" name="name" placeholder="Name / Company" required />
+      <input type="email" name="email" placeholder="Email Address" required />
+
+      <p class="email-note">
+        ※ We will send a reply to the email you enter. Please make sure it is correct.
       </p>
 
-      <form id="contactForm" class="contact-form" enctype="multipart/form-data" novalidate>
+      <input type="text" name="subject" placeholder="Subject" required />
+      <textarea name="message" rows="6" placeholder="Write your message..." required></textarea>
 
-        <input type="text" name="name" placeholder="Name / Company" required />
-        <input type="email" name="email" placeholder="Email Address" required />
+      <!-- File -->
+      <label class="file-label">
+        Attach file (optional, max 20MB):
+        <input type="file" id="attachment" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png">
+      </label>
+      <div class="file-info" id="fileInfo"></div>
 
-        <!-- 🔥 Email Notice -->
-        <p class="email-note">※ We will send a reply to the email you enter. Please make sure it is correct.</p>
+      <input type="hidden" name="attachment_url" id="attachment_url" />
 
-        <input type="text" name="subject" placeholder="Subject" required />
-
-        <textarea name="message" rows="6" placeholder="Write your message..." required></textarea>
-
-        <!-- File attachment (optional) -->
-        <label class="file-label">Attach file (optional, max 20MB):
-          <input type="file" id="attachment" name="attachment" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png">
-        </label>
-        <div class="file-info" id="fileInfo" aria-live="polite"></div>
-
-        <div class="progress" id="uploadProgress" style="display:none;">
-          <div class="progress-bar" id="uploadBar" style="width:0%"></div>
-        </div>
-
-        <!-- reCAPTCHA removed -->
-        <input type="hidden" name="attachment_url" id="attachment_url" />
-
-        <!-- 🔥 Honeypot bot filter -->
-        <div style="display:none;">
-          <input type="text" name="hp_field" autocomplete="off">
-        </div>
-
-        <button type="submit">Send Email</button>
-      </form>
-    </section>
-
-  </div>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-info">
-        <strong>INTRON GLOBAL CO., LTD.</strong><br />
-        Business Areas: Core Competencies: Wholesale Distribution | Global Trade (Export & Import)<br />
-        Address: #503-439, Taepyungyang Plaza, 9 Gangnam-ro, Giheung-gu, Yongin-si, Gyeonggi-do, Republic of Korea<br />
-        Contact Info: intron1101@gmail.com / Fax: +82 504-423-5748
+      <!-- Honeypot -->
+      <div style="display:none;">
+        <input type="text" name="hp_field" autocomplete="off">
       </div>
 
-      <div class="footer-copy">
-        © 2025 INTRON GLOBAL CO., LTD. All rights reserved.
-      </div>
+      <button type="submit">Send Email</button>
+    </form>
+  </section>
+
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-info">
+      <strong>INTRON GLOBAL CO., LTD.</strong><br />
+      Wholesale Distribution | Global Trade (Export & Import)<br />
+      Address: Yongin-si, Gyeonggi-do, Republic of Korea<br />
+      Contact: intron1101@gmail.com
     </div>
-  </footer>
+    <div class="footer-copy">
+      © 2025 INTRON GLOBAL CO., LTD. All rights reserved.
+    </div>
+  </div>
+</footer>
 
-  <!-- EmailJS -->
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
-  <script>
-    emailjs.init("S_pZX4esOTmL2yED9"); // keep your EmailJS user ID
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
-    const ALLOWED_TYPES = ["application/pdf","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","image/jpeg","image/png","text/plain"];
+<script>
+  /**************
+   * EmailJS
+   **************/
+  emailjs.init("S_pZX4esOTmL2yED9");
 
-    async function uploadFileToFileIo(file, onProgress) {
-      if (!file) return null;
-      const fd = new FormData();
-      fd.append("file", file);
-      // file.io supports form upload; may expire links – check limits
-      const res = await fetch("https://file.io", { method: "POST", body: fd });
-      const json = await res.json();
-      if (json && json.success && json.link) {
-        return json.link;
-      } else if (json && json.link) { // fallback if API differs
-        return json.link;
-      } else {
-        throw new Error("File upload failed");
-      }
+  /**************
+   * Supabase
+   **************/
+  const SUPABASE_URL = "https://ucewyyiqpngyzuayjmpb.supabase.co";
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjZXd5eWlxcG5neXp1YXlqbXBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk3MzY1NzAsImV4cCI6MjA4NTMxMjU3MH0.8W-abawPTEZ7Ds1pK_tamEAEs1vEbx7jBNAeVUT2NOg";
+
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  /**************
+   * File rules
+   **************/
+  const MAX_FILE_SIZE = 20 * 1024 * 1024;
+
+  const ALLOWED_TYPES = [
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "image/jpeg",
+    "image/png",
+    "text/plain"
+  ];
+
+  const BLOCKED_EXT = [".exe", ".js", ".bat", ".cmd", ".sh"];
+
+  function hasBlockedExt(filename) {
+    return BLOCKED_EXT.some(ext =>
+      filename.toLowerCase().endsWith(ext)
+    );
+  }
+
+  async function uploadFileToSupabase(file) {
+    const path = `contact/${Date.now()}_${file.name}`;
+
+    const { error } = await sb.storage
+      .from("attachments")
+      .upload(path, file, { upsert: false });
+
+    if (error) throw error;
+
+    const { data } = sb.storage
+      .from("attachments")
+      .getPublicUrl(path);
+
+    return data.publicUrl;
+  }
+
+  document.getElementById("attachment").addEventListener("change", function () {
+    const file = this.files[0];
+    const info = document.getElementById("fileInfo");
+
+    if (!file) {
+      info.textContent = "";
+      return;
     }
 
-    document.getElementById("attachment").addEventListener("change", function () {
-      const file = this.files[0];
-      const info = document.getElementById("fileInfo");
-      if (!file) { info.textContent = ""; return; }
-      if (file.size > MAX_FILE_SIZE) {
-        info.textContent = "File is too large (max 20MB).";
-        this.value = "";
-        return;
-      }
-      if (ALLOWED_TYPES.indexOf(file.type) === -1) {
-        info.textContent = "Unsupported file type.";
-        this.value = "";
-        return;
-      }
-      info.textContent = `Selected: ${file.name} (${Math.round(file.size/1024)} KB)`;
-    });
+    if (hasBlockedExt(file.name)) {
+      info.textContent = "This file type is not allowed.";
+      this.value = "";
+      return;
+    }
 
-    document.getElementById("contactForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const form = this;
+    if (file.size > MAX_FILE_SIZE) {
+      info.textContent = "File is too large (max 20MB).";
+      this.value = "";
+      return;
+    }
 
-      // Honeypot
-      if (form.hp_field.value.trim() !== "") {
-        alert("An error occurred during sending. (Code: 101)");
-        return;
-      }
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      info.textContent = "Unsupported file type.";
+      this.value = "";
+      return;
+    }
 
+    info.textContent = `Selected: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+  });
 
+  document.getElementById("contactForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const form = this;
 
-      if (!confirm("Once sent, the email cannot be edited or cancelled.\n\nHave you reviewed your message?\nDo you want to send this email?")) {
-        return;
-      }
+    if (form.hp_field.value.trim() !== "") {
+      alert("Error (Code 101)");
+      return;
+    }
 
-      const submitBtn = form.querySelector("button[type='submit']");
-      const originalText = submitBtn.textContent;
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Sending...";
+    if (!confirm("Send this email?")) return;
 
-      try {
-        // upload file if provided
-        let attachmentUrl = "";
-        const fileInput = document.getElementById("attachment");
-        if (fileInput && fileInput.files.length) {
-          const file = fileInput.files[0];
-          // Basic client-side validation
-          if (file.size > MAX_FILE_SIZE) throw new Error("File exceeds size limit.");
-          if (ALLOWED_TYPES.indexOf(file.type) === -1) throw new Error("Unsupported file type.");
-          document.getElementById("uploadProgress").style.display = "block";
-          // file.io doesn't support progress events on fetch; show indeterminate state
-          document.getElementById("uploadBar").style.width = "30%";
-          attachmentUrl = await uploadFileToFileIo(file);
-          document.getElementById("uploadBar").style.width = "100%";
+    const btn = form.querySelector("button");
+    btn.disabled = true;
+    btn.textContent = "Sending...";
+
+    try {
+      let attachmentUrl = "";
+      const fileInput = document.getElementById("attachment");
+
+      if (fileInput.files.length) {
+        const file = fileInput.files[0];
+
+        if (hasBlockedExt(file.name)) {
+          alert("This file type is not allowed.");
+          throw new Error("Blocked file extension");
         }
 
-        const payload = {
-          name: form.name.value,
-          email: form.email.value,
-          subject: form.subject.value,
-          message: form.message.value,
-          attachment_url: attachmentUrl
-        };
-
-        await emailjs.send("INTRON MAIL", "template_ahovfta", payload);
-        alert("Your inquiry has been sent successfully.");
-        form.reset();
-        document.getElementById("fileInfo").textContent = "";
-        document.getElementById("uploadProgress").style.display = "none";
-      } catch (err) {
-        console.error(err);
-        alert("Failed to send your message. Please try again later.");
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
+        attachmentUrl = await uploadFileToSupabase(file);
       }
-    });
-  </script>
 
-  <script>
-    document.addEventListener("contextmenu", event => event.preventDefault());
-  </script>
+      await emailjs.send("INTRON MAIL", "template_ahovfta", {
+        name: form.name.value,
+        email: form.email.value,
+        subject: form.subject.value,
+        message: form.message.value,
+        attachment_url: attachmentUrl
+      });
+
+      alert("Sent successfully.");
+      form.reset();
+      document.getElementById("fileInfo").textContent = "";
+
+    } catch (err) {
+      console.error(err);
+      alert("Failed to send.");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Send Email";
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener("contextmenu", e => e.preventDefault());
+</script>
 
 </body>
 </html>
-
-
