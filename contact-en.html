@@ -1,61 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INTRON GLOBAL – Contact</title>
+  <title>인트론글로벌 문의하기</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="has-footer">
 
   <div class="contact-page-wrapper">
 
-    <!-- Header -->
+    <!-- 문의페이지 헤더 -->
     <header class="contact-header">
-      <a href="#" onclick="window.close();" class="back-btn">← Close</a>
-      <h1>Contact Us</h1>
+      <a href="#" onclick="window.close();" class="back-btn">← 닫기</a>
+      <h1>문의하기</h1>
     </header>
 
-    <!-- Contact Section -->
+    <!-- 메인 문의 섹션 -->
     <section class="section contact-page">
-      <h2>Business Inquiry</h2>
+      <h2>거래 문의</h2>
       <p class="section-sub">
-        For wholesale, trade, import/export inquiries, please fill out the form below.
+        도매·무역(수출/수입) 관련 상담은 아래 양식을 통해 문의해주세요.
       </p>
 
       <form id="contactForm" class="contact-form">
 
-        <input type="text" name="name" placeholder="Name / Company" required />
-        <input type="email" name="email" placeholder="Email Address" required />
+        <input type="text" name="name" placeholder="이름 / 회사명" required />
+        <input type="email" name="email" placeholder="이메일" required />
 
-        <!-- 🔥 Email Notice -->
-        <p class="email-note">※ We will send a reply to the email you enter. Please make sure it is correct.</p>
+        <!-- 🔥 이메일 안내 안내문 -->
+        <p class="email-note">※ 작성하신 이메일로 답변이 발송됩니다. 정확한 이메일을 입력해주세요.</p>
 
-        <input type="text" name="subject" placeholder="Subject" required />
+        <input type="text" name="subject" placeholder="문의 제목" required />
 
-        <textarea name="message" rows="6" placeholder="Write your message..." required></textarea>
+        <textarea name="message" rows="6" placeholder="문의 내용을 입력하세요" required></textarea>
 
-        <!-- 🔥 Honeypot bot filter -->
+        <!-- 🔥 숨겨진 봇 체크 필드 (honeypot) -->
         <div style="display:none;">
           <input type="text" name="hp_field" autocomplete="off">
         </div>
 
-        <button type="submit">Send Email</button>
+        <!-- File attachment (optional) -->
+        <label class="file-label">첨부 파일 (선택, 최대 20MB):
+          <input type="file" id="attachment" name="attachment" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png">
+        </label>
+        <div class="file-info" id="fileInfo" aria-live="polite"></div>
+
+        <div class="progress" id="uploadProgress" style="display:none;">
+          <div class="progress-bar" id="uploadBar" style="width:0%"></div>
+        </div>
+
+        <!-- reCAPTCHA removed -->
+        <input type="hidden" name="attachment_url" id="attachment_url" />
+
+        <button type="submit">보내기</button>
       </form>
     </section>
 
   </div>
 
-  <!-- Footer -->
+  <!-- 푸터 -->
   <footer class="footer">
     <div class="footer-inner">
       <div class="footer-info">
-        <strong>INTRON GLOBAL CO., LTD.</strong><br />
-        Business Areas: Core Competencies: Wholesale Distribution | Global Trade (Export & Import)<br />
-        Address: #503-439, Taepyungyang Plaza, 9 Gangnam-ro, Giheung-gu, Yongin-si, Gyeonggi-do, Republic of Korea<br />
-        Contact Info: intron1101@gmail.com / Fax: +82 504-423-5748
+        <strong>(주)인트론글로벌</strong><br />
+        사업분야: 도매업 · 무역업(수출·수입)<br />
+        주소: 경기도 용인시 기흥구 강남로 9, 503-439호(구갈동, 태평양프라자)<br />
+        이메일: intron1101@gmail.com / 팩스: 0504-423-5748
       </div>
-
       <div class="footer-copy">
         © 2025 INTRON GLOBAL CO., LTD. All rights reserved.
       </div>
@@ -66,54 +78,104 @@
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
   <script>
-    emailjs.init("S_pZX4esOTmL2yED9");
+    emailjs.init("S_pZX4esOTmL2yED9"); // EmailJS user ID 유지
 
-    document.getElementById("contactForm").addEventListener("submit", function (e) {
+    const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+    const ALLOWED_TYPES = ["application/pdf","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","image/jpeg","image/png","text/plain"];
+
+    async function uploadFileToFileIo(file, onProgress) {
+      if (!file) return null;
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("https://file.io", { method: "POST", body: fd });
+      const json = await res.json();
+      if (json && json.success && json.link) {
+        return json.link;
+      } else if (json && json.link) {
+        return json.link;
+      } else {
+        throw new Error("File upload failed");
+      }
+    }
+
+    document.getElementById("attachment").addEventListener("change", function () {
+      const file = this.files[0];
+      const info = document.getElementById("fileInfo");
+      if (!file) { info.textContent = ""; return; }
+      if (file.size > MAX_FILE_SIZE) {
+        info.textContent = "파일이 너무 큽니다 (최대 20MB).";
+        this.value = "";
+        return;
+      }
+      if (ALLOWED_TYPES.indexOf(file.type) === -1) {
+        info.textContent = "지원하지 않는 파일 형식입니다.";
+        this.value = "";
+        return;
+      }
+      info.textContent = `선택됨: ${file.name} (${Math.round(file.size/1024)} KB)`;
+    });
+
+    document.getElementById("contactForm").addEventListener("submit", async function (e) {
       e.preventDefault();
-
       const form = this;
+
+      // 허니팟
+      if (form.hp_field.value.trim() !== "") {
+        alert("전송 중 오류가 발생했습니다. (코드: 101)");
+        return;
+      }
+
+
+
+      if (!confirm("전송 후 수정/취소가 불가능합니다.\n\n내용을 확인하셨습니까?\n전송하시겠습니까?")) {
+        return;
+      }
+
       const submitBtn = form.querySelector("button[type='submit']");
       const originalText = submitBtn.textContent;
-
-      // 🔥 Honeypot bot detection
-      if (form.hp_field.value.trim() !== "") {
-        alert("An error occurred during sending. (Code: 101)");
-        return;
-      }
-
-      // 🔥 Pre-send warning
-      if (!confirm(
-        "Once sent, the email cannot be edited or cancelled.\n\n" +
-        "Have you reviewed your message?\n" +
-        "Do you want to send this email?"
-      )) {
-        return;
-      }
-
-      const formData = {
-        name: form.name.value,
-        email: form.email.value,
-        subject: form.subject.value,
-        message: form.message.value
-      };
-
       submitBtn.disabled = true;
-      submitBtn.textContent = "Sending...";
+      submitBtn.textContent = "전송 중...";
 
-      emailjs.send("INTRON MAIL", "template_ahovfta", formData)
-        .then(() => {
-          alert("Your inquiry has been sent successfully.");
-          form.reset();
-        })
-        .catch(error => {
-          console.error(error);
-          alert("Failed to send your message. Please try again later.");
-        })
-        .finally(() => {
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalText;
-        });
+      try {
+        let attachmentUrl = "";
+        const fileInput = document.getElementById("attachment");
+        if (fileInput && fileInput.files.length) {
+          const file = fileInput.files[0];
+          if (file.size > MAX_FILE_SIZE) throw new Error("파일 용량 초과");
+          if (ALLOWED_TYPES.indexOf(file.type) === -1) throw new Error("지원되지 않는 파일 형식");
+          document.getElementById("uploadProgress").style.display = "block";
+          document.getElementById("uploadBar").style.width = "30%";
+          attachmentUrl = await uploadFileToFileIo(file);
+          document.getElementById("uploadBar").style.width = "100%";
+        }
+
+        const payload = {
+          name: form.name.value,
+          email: form.email.value,
+          subject: form.subject.value,
+          message: form.message.value,
+          attachment_url: attachmentUrl
+        };
+
+        await emailjs.send("INTRON MAIL", "template_ahovfta", payload);
+        alert("문의가 정상적으로 전송되었습니다.");
+        form.reset();
+        document.getElementById("fileInfo").textContent = "";
+        document.getElementById("uploadProgress").style.display = "none";
+      } catch (err) {
+        console.error(err);
+        alert("전송에 실패했습니다. 나중에 다시 시도해 주세요.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
     });
+
+
+
+
+
+
   </script>
   
   <script>
