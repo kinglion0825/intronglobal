@@ -26,15 +26,15 @@
 
     <form id="contactForm" class="contact-form" enctype="multipart/form-data" novalidate>
 
-      <input type="text" name="name" placeholder="Name / Company" required />
-      <input type="email" name="email" placeholder="Email Address" required />
+      <input type="text" name="name" placeholder="Name / Company" />
+      <input type="email" name="email" placeholder="Email Address" />
 
       <p class="email-note">
         ※ We will send a reply to the email you enter. Please make sure it is correct.
       </p>
 
-      <input type="text" name="subject" placeholder="Subject" required />
-      <textarea name="message" rows="6" placeholder="Write your message..." required></textarea>
+      <input type="text" name="subject" placeholder="Subject" />
+      <textarea name="message" rows="6" placeholder="Write your message..."></textarea>
 
       <!-- File -->
       <label class="file-label">
@@ -78,24 +78,15 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-  /**************
-   * EmailJS
-   **************/
   emailjs.init("S_pZX4esOTmL2yED9");
 
-  /**************
-   * Supabase
-   **************/
   const SUPABASE_URL = "https://ucewyyiqpngyzuayjmpb.supabase.co";
   const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjZXd5eWlxcG5neXp1YXlqbXBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk3MzY1NzAsImV4cCI6MjA4NTMxMjU3MH0.8W-abawPTEZ7Ds1pK_tamEAEs1vEbx7jBNAeVUT2NOg";
+    "YOUR_KEY";
 
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  /**************
-   * File rules
-   **************/
   const MAX_FILE_SIZE = 30 * 1024 * 1024;
 
   const ALLOWED_TYPES = [
@@ -149,7 +140,7 @@
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      info.textContent = "File is too large (max 20MB).";
+      info.textContent = "File is too large (max 30MB).";
       this.value = "";
       return;
     }
@@ -167,6 +158,18 @@
     e.preventDefault();
     const form = this;
 
+    // ✅ 필수 입력값 검사
+    if (
+      !form.name.value.trim() ||
+      !form.email.value.trim() ||
+      !form.subject.value.trim() ||
+      !form.message.value.trim()
+    ) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    // honeypot
     if (form.hp_field.value.trim() !== "") {
       alert("Error (Code 101)");
       return;
@@ -213,12 +216,9 @@
       btn.textContent = "Send Email";
     }
   });
-</script>
 
-<script>
   document.addEventListener("contextmenu", e => e.preventDefault());
 </script>
 
 </body>
 </html>
-
