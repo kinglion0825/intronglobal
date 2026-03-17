@@ -11,32 +11,31 @@
 
 <div class="contact-page-wrapper">
 
-  <!-- Header -->
   <header class="contact-header">
     <a href="#" onclick="window.close();" class="back-btn">← Close</a>
     <h1>Contact Us</h1>
   </header>
 
-  <!-- Contact Section -->
   <section class="section contact-page">
     <h2>Business Inquiry</h2>
     <p class="section-sub">
       For wholesale, trade, import/export inquiries, please fill out the form below.
     </p>
 
-    <form id="contactForm" class="contact-form" enctype="multipart/form-data" novalidate>
+    <!-- 🔥 novalidate 제거 -->
+    <form id="contactForm" class="contact-form" enctype="multipart/form-data">
 
-      <input type="text" name="name" placeholder="Name / Company" />
-      <input type="email" name="email" placeholder="Email Address" />
+      <!-- 🔥 required 다시 활성화 -->
+      <input type="text" name="name" placeholder="Name / Company" required />
+      <input type="email" name="email" placeholder="Email Address" required />
 
       <p class="email-note">
         ※ We will send a reply to the email you enter. Please make sure it is correct.
       </p>
 
-      <input type="text" name="subject" placeholder="Subject" />
-      <textarea name="message" rows="6" placeholder="Write your message..."></textarea>
+      <input type="text" name="subject" placeholder="Subject" required />
+      <textarea name="message" rows="6" placeholder="Write your message..." required></textarea>
 
-      <!-- File -->
       <label class="file-label">
         Attach file (optional, max 30MB):
         <input type="file" id="attachment" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png">
@@ -45,7 +44,6 @@
 
       <input type="hidden" name="attachment_url" id="attachment_url" />
 
-      <!-- Honeypot -->
       <div style="display:none;">
         <input type="text" name="hp_field" autocomplete="off">
       </div>
@@ -56,7 +54,6 @@
 
 </div>
 
-<!-- Footer -->
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-info">
@@ -71,18 +68,14 @@
   </div>
 </footer>
 
-<!-- EmailJS -->
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-
-<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
   emailjs.init("S_pZX4esOTmL2yED9");
 
   const SUPABASE_URL = "https://ucewyyiqpngyzuayjmpb.supabase.co";
-  const SUPABASE_ANON_KEY =
-    "YOUR_KEY";
+  const SUPABASE_ANON_KEY = "YOUR_KEY";
 
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -90,37 +83,26 @@
   const MAX_FILE_SIZE = 30 * 1024 * 1024;
 
   const ALLOWED_TYPES = [
-    "application/pdf",
-    "application/msword",
+    "application/pdf","application/msword",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "application/vnd.ms-excel",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    "image/jpeg",
-    "image/png",
-    "text/plain"
+    "image/jpeg","image/png","text/plain"
   ];
 
   const BLOCKED_EXT = [".exe", ".js", ".bat", ".cmd", ".sh"];
 
   function hasBlockedExt(filename) {
-    return BLOCKED_EXT.some(ext =>
-      filename.toLowerCase().endsWith(ext)
-    );
+    return BLOCKED_EXT.some(ext => filename.toLowerCase().endsWith(ext));
   }
 
   async function uploadFileToSupabase(file) {
     const path = `contact/${Date.now()}_${file.name}`;
 
-    const { error } = await sb.storage
-      .from("attachments")
-      .upload(path, file, { upsert: false });
-
+    const { error } = await sb.storage.from("attachments").upload(path, file);
     if (error) throw error;
 
-    const { data } = sb.storage
-      .from("attachments")
-      .getPublicUrl(path);
-
+    const { data } = sb.storage.from("attachments").getPublicUrl(path);
     return data.publicUrl;
   }
 
@@ -128,10 +110,7 @@
     const file = this.files[0];
     const info = document.getElementById("fileInfo");
 
-    if (!file) {
-      info.textContent = "";
-      return;
-    }
+    if (!file) return info.textContent = "";
 
     if (hasBlockedExt(file.name)) {
       info.textContent = "This file type is not allowed.";
@@ -140,7 +119,7 @@
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      info.textContent = "File is too large (max 30MB).";
+      info.textContent = "File is too large.";
       this.value = "";
       return;
     }
@@ -151,14 +130,14 @@
       return;
     }
 
-    info.textContent = `Selected: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+    info.textContent = `Selected: ${file.name}`;
   });
 
   document.getElementById("contactForm").addEventListener("submit", async function (e) {
     e.preventDefault();
     const form = this;
 
-    // ✅ 필수 입력값 검사
+    // 🔥 JS 2차 검사 (확실하게)
     if (
       !form.name.value.trim() ||
       !form.email.value.trim() ||
@@ -169,12 +148,12 @@
       return;
     }
 
-    // honeypot
     if (form.hp_field.value.trim() !== "") {
       alert("Error (Code 101)");
       return;
     }
 
+    // 🔥 여기서만 confirm
     if (!confirm("Send this email?")) return;
 
     const btn = form.querySelector("button");
@@ -187,12 +166,7 @@
 
       if (fileInput.files.length) {
         const file = fileInput.files[0];
-
-        if (hasBlockedExt(file.name)) {
-          alert("This file type is not allowed.");
-          throw new Error("Blocked file extension");
-        }
-
+        if (hasBlockedExt(file.name)) throw new Error("Blocked file");
         attachmentUrl = await uploadFileToSupabase(file);
       }
 
