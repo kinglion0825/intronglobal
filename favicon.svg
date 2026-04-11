@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="INTRON GLOBAL">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2f435b" />
+      <stop offset="100%" stop-color="#6f879f" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#bg)" />
+  <circle cx="32" cy="32" r="23" fill="none" stroke="#f5f8fb" stroke-width="2.5" opacity="0.9" />
+  <path d="M22 20v24" stroke="#f5f8fb" stroke-width="4" stroke-linecap="round" />
+  <path d="M28 20v24" stroke="#f5f8fb" stroke-width="4" stroke-linecap="round" opacity="0.4" />
+  <path d="M40 20c-6 0-10 4.5-10 12s4 12 10 12" fill="none" stroke="#f5f8fb" stroke-width="4" stroke-linecap="round" />
+  <path d="M40 20c6 0 10 4.5 10 12s-4 12-10 12" fill="none" stroke="#f5f8fb" stroke-width="4" stroke-linecap="round" />
+</svg>
