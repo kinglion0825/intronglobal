@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INTRON GLOBAL Contact</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="subpage-header">
+      <div class="subpage-header-inner">
+        <a href="/index-en/" class="back-link">← Back</a>
+        <a href="/index-en/" class="logo">
+          <img src="/Crop.jpeg" alt="INTRON GLOBAL Logo" class="logo-img">
+          <span class="logo-text">INTRON GLOBAL</span>
+        </a>
+
+        <nav class="subpage-nav">
+          <div class="lang-select">
+            <a href="/contact/" class="kr">KR</a>
+            <span>|</span>
+            <a href="/contact-en/" class="en active">EN</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <section class="section service-hero contact-page">
+        <h1>Contact Us</h1>
+        <p class="service-lead">
+          Send us your inquiry regarding wholesale, trade, or import and export operations,
+          and we will get back to you after review.
+        </p>
+      </section>
+
+      <section class="section contact-page">
+        <form id="contactForm" class="contact-form" enctype="multipart/form-data" novalidate>
+          <input type="text" name="name" placeholder="Name / Company" required />
+          <input type="email" name="email" placeholder="Email Address" required />
+          <p class="email-note">We will reply to the email address you enter, so please make sure it is accurate.</p>
+          <input type="text" name="subject" placeholder="Subject" required />
+          <textarea name="message" rows="6" placeholder="Write your message..." required></textarea>
+
+          <label class="file-label">Attach file (optional, max 20MB):
+            <input type="file" id="attachment" name="attachment" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png">
+          </label>
+          <div class="file-info" id="fileInfo" aria-live="polite"></div>
+
+          <div class="progress" id="uploadProgress" style="display:none;">
+            <div class="progress-bar" id="uploadBar" style="width:0%"></div>
+          </div>
+
+          <input type="hidden" name="attachment_url" id="attachment_url" />
+
+          <div style="display:none;">
+            <input type="text" name="hp_field" autocomplete="off">
+          </div>
+
+          <button type="submit">Send Email</button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-info">
+          <strong>INTRON GLOBAL CO., LTD.</strong><br />
+          Business Areas: Wholesale Distribution | Global Trade | Export & Import<br />
+          Address: #503-439, 9 Gangnam-ro, Giheung-gu, Yongin-si, Gyeonggi-do, Republic of Korea<br />
+          Contact Info: intron1101@gmail.com | Fax: +82 504-423-5748
+        </div>
+        <div class="footer-copy">
+          © 2025 INTRON GLOBAL CO., LTD. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+  <script>
+    emailjs.init("S_pZX4esOTmL2yED9");
+
+    const MAX_FILE_SIZE = 20 * 1024 * 1024;
+    const ALLOWED_TYPES = ["application/pdf","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","image/jpeg","image/png","text/plain"];
+
+    async function uploadFileToFileIo(file) {
+      if (!file) return null;
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("https://file.io", { method: "POST", body: fd });
+      const json = await res.json();
+      if (json && json.success && json.link) return json.link;
+      if (json && json.link) return json.link;
+      throw new Error("File upload failed");
+    }
+
+    document.getElementById("attachment").addEventListener("change", function () {
+      const file = this.files[0];
+      const info = document.getElementById("fileInfo");
+      if (!file) {
+        info.textContent = "";
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        info.textContent = "File is too large (max 20MB).";
+        this.value = "";
+        return;
+      }
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        info.textContent = "Unsupported file type.";
+        this.value = "";
+        return;
+      }
+      info.textContent = `Selected: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+    });
+
+    document.getElementById("contactForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const form = this;
+
+      if (form.hp_field.value.trim() !== "") {
+        alert("An error occurred during sending. (Code: 101)");
+        return;
+      }
+
+      if (!confirm("Once sent, the email cannot be edited or cancelled.\n\nHave you reviewed your message?\nDo you want to send this email?")) {
+        return;
+      }
+
+      const submitBtn = form.querySelector("button[type='submit']");
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Sending...";
+
+      try {
+        let attachmentUrl = "";
+        const fileInput = document.getElementById("attachment");
+        if (fileInput && fileInput.files.length) {
+          const file = fileInput.files[0];
+          if (file.size > MAX_FILE_SIZE) throw new Error("File exceeds size limit.");
+          if (!ALLOWED_TYPES.includes(file.type)) throw new Error("Unsupported file type.");
+          document.getElementById("uploadProgress").style.display = "block";
+          document.getElementById("uploadBar").style.width = "30%";
+          attachmentUrl = await uploadFileToFileIo(file);
+          document.getElementById("uploadBar").style.width = "100%";
+        }
+
+        const payload = {
+          name: form.name.value,
+          email: form.email.value,
+          subject: form.subject.value,
+          message: form.message.value,
+          attachment_url: attachmentUrl
+        };
+
+        await emailjs.send("INTRON MAIL", "template_ahovfta", payload);
+        alert("Your inquiry has been sent successfully.");
+        form.reset();
+        document.getElementById("fileInfo").textContent = "";
+        document.getElementById("uploadProgress").style.display = "none";
+      } catch (err) {
+        console.error(err);
+        alert("Failed to send your message. Please try again later.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+  </script>
+
+  <script>
+    document.addEventListener("contextmenu", (event) => event.preventDefault());
+  </script>
+</body>
+</html>
